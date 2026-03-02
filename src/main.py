@@ -3,6 +3,7 @@ from src.config import Settings
 from src.data.feed import get_mock_data, get_yfinance_data
 from src.strategy.ma_crossover import MovingAverageCrossover
 from src.backtest.engine import run_backtest
+from src.risk.manager import RiskManager
 
 
 def main() -> None:
@@ -28,7 +29,20 @@ def main() -> None:
             print("Using mock data")
 
         strategy = MovingAverageCrossover(short_window=20, long_window=50)
-        report = run_backtest(df=df, strategy=strategy, initial_balance=settings.initial_balance)
+        risk_manager = RiskManager(
+            risk_per_trade=settings.risk_per_trade,
+            stop_loss_pct=settings.stop_loss_pct,
+            take_profit_pct=settings.take_profit_pct,
+            max_position_notional_pct=settings.max_position_notional_pct,
+        )
+
+        report = run_backtest(
+            df=df,
+            strategy=strategy,
+            initial_balance=settings.initial_balance,
+            risk_manager=risk_manager,
+        )
+
         print("=== Backtest Report ===")
         for k, v in report.items():
             print(f"{k}: {v}")

@@ -16,6 +16,9 @@ class Settings:
     data_provider: str
     yfinance_symbol: str
     yfinance_period: str
+    stop_loss_pct: float
+    take_profit_pct: float
+    max_position_notional_pct: float
 
     @staticmethod
     def from_env() -> "Settings":
@@ -28,4 +31,7 @@ class Settings:
             data_provider=os.getenv("DATA_PROVIDER", "yfinance"),
             yfinance_symbol=os.getenv("YFINANCE_SYMBOL", "GC=F"),
             yfinance_period=os.getenv("YFINANCE_PERIOD", "60d"),
+            stop_loss_pct=float(os.getenv("STOP_LOSS_PCT", "0.01")),
+            take_profit_pct=float(os.getenv("TAKE_PROFIT_PCT", "0.02")),
+            max_position_notional_pct=float(os.getenv("MAX_POSITION_NOTIONAL_PCT", "1.0")),
         )
