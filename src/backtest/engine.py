@@ -1,6 +1,5 @@
 import pandas as pd
 
-
 from src.risk.manager import RiskManager
 
 
@@ -9,7 +8,8 @@ def run_backtest(
     strategy,
     initial_balance: float = 10000,
     risk_manager: RiskManager | None = None,
-) -> dict:
+    return_details: bool = False,
+):
     if risk_manager is None:
         risk_manager = RiskManager()
 
@@ -26,9 +26,13 @@ def run_backtest(
     entry_price = 0.0
     stop_price = 0.0
     take_profit_price = 0.0
+    entry_index = -1
 
     trades = 0
     wins = 0
+
+    trade_rows = []
+    equity_rows = [{"index": 0, "equity": equity}]
 
     for i in range(1, len(prices)):
         price = float(prices.iloc[i])
@@ -37,22 +41,47 @@ def run_backtest(
         # Exit logic for open position
         if in_position:
             exit_now = False
+            exit_reason = ""
             pnl = 0.0
 
             if side == 1:  # long
-                if price <= stop_price or price >= take_profit_price:
+                if price <= stop_price:
                     pnl = units * (price - entry_price)
                     exit_now = True
+                    exit_reason = "stop_loss"
+                elif price >= take_profit_price:
+                    pnl = units * (price - entry_price)
+                    exit_now = True
+                    exit_reason = "take_profit"
             else:  # short
-                if price >= stop_price or price <= take_profit_price:
+                if price >= stop_price:
                     pnl = units * (entry_price - price)
                     exit_now = True
+                    exit_reason = "stop_loss"
+                elif price <= take_profit_price:
+                    pnl = units * (entry_price - price)
+                    exit_now = True
+                    exit_reason = "take_profit"
 
             if exit_now:
                 equity += pnl
                 trades += 1
                 if pnl > 0:
                     wins += 1
+
+                trade_rows.append(
+                    {
+                        "entry_index": entry_index,
+                        "exit_index": i,
+                        "side": "long" if side == 1 else "short",
+                        "entry_price": round(entry_price, 6),
+                        "exit_price": round(price, 6),
+                        "units": round(units, 6),
+                        "pnl": round(pnl, 6),
+                        "exit_reason": exit_reason,
+                    }
+                )
+
                 in_position = False
                 side = 0
                 units = 0.0
@@ -64,6 +93,7 @@ def run_backtest(
                 units = notional / price
                 side = signal
                 entry_price = price
+                entry_index = i
                 if side == 1:
                     stop_price = entry_price * (1 - risk_manager.stop_loss_pct)
                     take_profit_price = entry_price * (1 + risk_manager.take_profit_pct)
@@ -80,6 +110,8 @@ def run_backtest(
             else:
                 mtm_equity += units * (entry_price - price)
 
+        equity_rows.append({"index": i, "equity": round(float(mtm_equity), 6)})
+
         peak_equity = max(peak_equity, mtm_equity)
         if peak_equity > 0:
             dd = (peak_equity - mtm_equity) / peak_equity
@@ -94,10 +126,23 @@ def run_backtest(
         if pnl > 0:
             wins += 1
 
+        trade_rows.append(
+            {
+                "entry_index": entry_index,
+                "exit_index": len(prices) - 1,
+                "side": "long" if side == 1 else "short",
+                "entry_price": round(entry_price, 6),
+                "exit_price": round(final_price, 6),
+                "units": round(units, 6),
+                "pnl": round(pnl, 6),
+                "exit_reason": "end_of_data",
+            }
+        )
+
     total_return = (equity / initial_balance) - 1
     win_rate = (wins / trades * 100) if trades else 0.0
 
-    return {
+    report = {
         "initial_balance": round(initial_balance, 2),
         "final_balance": round(float(equity), 2),
         "total_return_pct": round(float(total_return * 100), 2),
@@ -108,3 +153,10 @@ def run_backtest(
         "stop_loss_pct": round(risk_manager.stop_loss_pct * 100, 2),
         "take_profit_pct": round(risk_manager.take_profit_pct * 100, 2),
     }
+
+    if return_details:
+        equity_df = pd.DataFrame(equity_rows)
+        trades_df = pd.DataFrame(trade_rows)
+        return report, equity_df, trades_df
+
+    return report
