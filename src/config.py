@@ -19,6 +19,8 @@ class Settings:
     stop_loss_pct: float
     take_profit_pct: float
     max_position_notional_pct: float
+    paper_poll_seconds: int
+    paper_max_loops: int
 
     @staticmethod
     def from_env() -> "Settings":
@@ -34,4 +36,6 @@ class Settings:
             stop_loss_pct=float(os.getenv("STOP_LOSS_PCT", "0.01")),
             take_profit_pct=float(os.getenv("TAKE_PROFIT_PCT", "0.02")),
             max_position_notional_pct=float(os.getenv("MAX_POSITION_NOTIONAL_PCT", "1.0")),
+            paper_poll_seconds=int(os.getenv("PAPER_POLL_SECONDS", "60")),
+            paper_max_loops=int(os.getenv("PAPER_MAX_LOOPS", "30")),
         )

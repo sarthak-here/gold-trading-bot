@@ -17,6 +17,12 @@ pip install -r requirements.txt
 python -m src.main --mode backtest --source yfinance --save-report
 ```
 
+## Paper trading loop
+```bash
+python -m src.main --mode paper
+```
+This runs a live paper loop using yfinance prices and your risk settings.
+
 ## Next milestones
 1. Connect broker/data provider
 2. Add robust position sizing + SL/TP rules
