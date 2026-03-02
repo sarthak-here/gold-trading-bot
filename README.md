@@ -14,7 +14,7 @@ A starter Python project for building, backtesting, and running a gold trading b
 python -m venv .venv
 .venv\Scripts\activate
 pip install -r requirements.txt
-python -m src.main --mode backtest
+python -m src.main --mode backtest --source yfinance
 ```
 
 ## Next milestones
