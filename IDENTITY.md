@@ -9,7 +9,7 @@ _Fill this in during your first conversation. Make it yours._
 - **Vibe:**
   sharp
 - **Emoji:**
-  🫡
+  🤵
 - **Avatar:**
   _(workspace-relative path, http(s) URL, or data URI)_
 
