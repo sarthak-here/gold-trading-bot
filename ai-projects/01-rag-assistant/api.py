@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 
+from retriever import retrieve_top_k
+
 
 app = FastAPI(title="RAG Assistant Starter")
 
@@ -16,9 +18,17 @@ def health():
 
 @app.post("/ask")
 def ask(req: AskRequest):
-    # Placeholder: retrieval + generation pipeline will be wired next
+    chunks = retrieve_top_k(req.question, k=3)
+    sources = [{"text": c.text, "score": c.score} for c in chunks]
+
+    if not sources:
+        answer = "No relevant context found."
+    else:
+        top = sources[0]["text"]
+        answer = f"Based on retrieved context: {top}"
+
     return {
         "question": req.question,
-        "answer": "Stub response: retrieval pipeline not connected yet.",
-        "sources": [],
+        "answer": answer,
+        "sources": sources,
     }

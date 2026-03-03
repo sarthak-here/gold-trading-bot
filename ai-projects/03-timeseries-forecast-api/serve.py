@@ -1,3 +1,5 @@
+from typing import List
+
 from fastapi import FastAPI
 from pydantic import BaseModel
 
@@ -6,7 +8,7 @@ app = FastAPI(title="Time-Series Forecast API")
 
 
 class ForecastRequest(BaseModel):
-    values: list[float]
+    values: List[float]
 
 
 @app.get("/health")
