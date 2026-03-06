@@ -41,5 +41,28 @@ Run with `--save-report` to generate files under `reports/backtest-<timestamp>/`
 - `equity_curve.csv` (index-wise equity)
 - `trades.csv` (trade log with entry/exit/pnl)
 
+## Streamlit Forecast Dashboard (New)
+A visual interface is included for future price prediction and charting.
+
+### Files
+- `streamlit_app.py` — Streamlit UI for historical + forecast visualization
+- `requirements-streamlit.txt` — dependencies for the dashboard
+
+### Run dashboard
+```bash
+pip install -r requirements-streamlit.txt
+streamlit run streamlit_app.py
+```
+
+### Gold usage
+- Use ticker mode and enter `GC=F` (Gold Futures), or
+- Upload your own gold price CSV (date + price columns)
+
+Dashboard features:
+- Historical price chart
+- Future price forecast with confidence band
+- Backtest metrics (MAE/RMSE)
+- Forecast table + CSV download
+
 ## Disclaimer
 This code is for education/research. Trading is risky. Use paper trading first.
