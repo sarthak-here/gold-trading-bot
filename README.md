@@ -55,8 +55,8 @@ streamlit run streamlit_app.py
 ```
 
 ### Gold usage
-- Use ticker mode and enter `GC=F` (Gold Futures), or
-- Upload your own gold price CSV (date + price columns)
+- Ticker mode defaults to `GC=F` (Gold Futures)
+- You can also upload your own gold price CSV (date + price columns)
 
 Dashboard features:
 - Historical price chart

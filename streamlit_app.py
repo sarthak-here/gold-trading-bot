@@ -8,7 +8,7 @@ import streamlit as st
 from sklearn.linear_model import Ridge
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 
-st.set_page_config(page_title="Future Price Prediction", layout="wide")
+st.set_page_config(page_title="Gold Price Forecast Dashboard", layout="wide")
 
 
 @dataclass
@@ -208,8 +208,8 @@ def plot_forecast(data: pd.DataFrame, forecast_df: pd.DataFrame):
 
 
 def main():
-    st.title("📈 Future Price Prediction Dashboard")
-    st.caption("Upload your own data or fetch stock data by ticker, then visualize and forecast future prices.")
+    st.title("🥇 Gold Price Forecast Dashboard")
+    st.caption("Upload gold price data or fetch from Yahoo ticker (default: GC=F), then visualize and forecast future prices.")
 
     with st.sidebar:
         st.header("Data Source")
@@ -238,7 +238,7 @@ def main():
             st.success(f"Loaded {len(data)} rows. Date: '{date_col}', Price: '{price_col}'")
 
     else:
-        ticker = st.text_input("Ticker", value="AAPL")
+        ticker = st.text_input("Ticker", value="GC=F")
         period = st.selectbox("History period", ["6mo", "1y", "2y", "5y", "10y"], index=2)
         if st.button("Fetch data"):
             try:
