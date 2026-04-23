@@ -1,5 +1,10 @@
 # Gold Trading Bot (XAUUSD)
 
+> **[System Design](./systemdesign.md)** - Architecture, data flow, and how it works end-to-end
+
+---
+
+
 A starter Python project for building, backtesting, and running a gold trading bot.
 
 ## Scope (v0)
